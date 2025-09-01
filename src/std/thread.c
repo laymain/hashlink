@@ -20,97 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <hl.h>
-
-typedef struct _hl_semaphore hl_semaphore;
-typedef struct _hl_condition hl_condition;
-
-#if !defined(HL_THREADS)
-
-struct _hl_mutex {
-	void (*free)( hl_mutex * );
-	void *_unused;
-};
-
-struct _hl_semaphore {
-  void (*free)(hl_semaphore *);
-};
-
-struct _hl_condition {
-  void (*free)(hl_condition *);
-};
-
-struct _hl_tls {
-	void (*free)( hl_tls * );
-	void *value;
-};
-
-#elif defined(HL_WIN)
-
-struct _hl_mutex {
-	void (*free)( hl_mutex * );
-	CRITICAL_SECTION cs;
-	bool is_gc;
-};
-
-struct _hl_semaphore {
-	void (*free)(hl_semaphore *);
-	HANDLE sem;
-};
-
-struct _hl_condition {
-	void (*free)(hl_condition *);
-	CRITICAL_SECTION cs;
-	CONDITION_VARIABLE cond;
-};
-
-struct _hl_tls {
-	void (*free)( hl_tls * );
-	DWORD tid;
-	bool gc;
-};
-
-#else
-
-#	include <pthread.h>
-#	include <unistd.h>
-#	include <sys/syscall.h>
-#	include <sys/time.h>
-
-#ifdef __APPLE__
-#include <dispatch/dispatch.h>
-#else
-#include <semaphore.h>
-#endif
-
-struct _hl_mutex {
-	void (*free)( hl_mutex * );
-	pthread_mutex_t lock;
-	bool is_gc;
-};
-
-struct _hl_semaphore {
-	void (*free)(hl_semaphore *);
-#	ifdef __APPLE__
-	dispatch_semaphore_t sem;
-#	else
-	sem_t sem;
-#endif
-};
-
-struct _hl_condition {
-	void (*free)(hl_condition *);
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
-};
-
-struct _hl_tls {
-	void (*free)( hl_tls * );
-	pthread_key_t key;
-	bool gc;
-};
-
-#endif
+#include "thread.h"
 
 // ----------------- ALLOC
 
@@ -560,29 +470,6 @@ DEFINE_PRIM(_VOID, tls_set, _TLS _DYN);
 
 // ----------------- DEQUE
 
-typedef struct _tqueue {
-	vdynamic *msg;
-	struct _tqueue *next;
-} tqueue;
-
-struct _hl_deque;
-typedef struct _hl_deque hl_deque;
-
-struct _hl_deque {
-	void (*free)( hl_deque * );
-	tqueue *first;
-	tqueue *last;
-#ifdef HL_THREADS
-#	ifdef HL_WIN
-	CRITICAL_SECTION lock;
-	HANDLE wait;
-#	else
-	pthread_mutex_t lock;
-	pthread_cond_t wait;
-#	endif
-#endif
-};
-
 #if !defined(HL_THREADS)
 #	define LOCK(l)
 #	define UNLOCK(l)
@@ -690,22 +577,6 @@ DEFINE_PRIM(_VOID, deque_push, _DEQUE _DYN);
 DEFINE_PRIM(_DYN, deque_pop, _DEQUE _BOOL);
 
 // ----------------- LOCK
-
-struct _hl_lock;
-typedef struct _hl_lock hl_lock;
-
-struct _hl_lock {
-	void (*free)( hl_lock * );
-#if !defined(HL_THREADS)
-	int counter;
-#elif defined(HL_WIN)
-	HANDLE wait;
-#else
-	pthread_mutex_t lock;
-	pthread_cond_t wait;
-	int counter;
-#endif
-};
 
 static void hl_lock_free( hl_lock *l ) {
 #	if !defined(HL_THREADS)

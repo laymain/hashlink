@@ -23,7 +23,7 @@
 #	define _FILE_OFFSET_BITS 64
 #endif
 
-#include <hl.h>
+#include "file.h"
 #include <stdio.h>
 #ifdef HL_CONSOLE
 #	include <posix/posix.h>
@@ -67,15 +67,6 @@ static size_t fwrite_retry( void *buffer, size_t size, size_t count, FILE *f ) {
 #define fread fread_retry
 #define fwrite fwrite_retry
 #endif
-
-typedef struct _hl_fdesc hl_fdesc;
-struct _hl_fdesc {
-	void (*finalize)( hl_fdesc * );
-	FILE *f;
-#	ifdef HL_WIN_DESKTOP
-	bool is_std;
-#	endif
-};
 
 static void fdesc_finalize( hl_fdesc *f ) {
 	if( f->f ) fclose(f->f);

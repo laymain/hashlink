@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <hl.h>
+#include "process.h"
 
 #if defined(HL_CONSOLE)
 #	include <posix/posix.h>
@@ -39,23 +39,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct _vprocess vprocess;
-
-struct _vprocess {
-	void (*finalize)( vprocess * );
-#ifdef HL_WIN
-	HANDLE oread;
-	HANDLE eread;
-	HANDLE iwrite;
-	PROCESS_INFORMATION pinf;
-#else
-	int oread;
-	int eread;
-	int iwrite;
-	int pid;
-#endif
-};
 
 static void process_finalize( vprocess *p ) {
 #	ifdef HL_WIN

@@ -19,19 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <hl.h>
-
-HL_PRIM hl_type hlt_array = { HARRAY };
-HL_PRIM hl_type hlt_bytes = { HBYTES };
-HL_PRIM hl_type hlt_dynobj = { HDYNOBJ };
-HL_PRIM hl_type hlt_dyn = { HDYN };
-HL_PRIM hl_type hlt_i32 = { HI32 };
-HL_PRIM hl_type hlt_i64 = { HI64 };
-HL_PRIM hl_type hlt_f32 = { HF32 };
-HL_PRIM hl_type hlt_f64 = { HF64 };
-HL_PRIM hl_type hlt_void = { HVOID };
-HL_PRIM hl_type hlt_bool = { HBOOL };
-HL_PRIM hl_type hlt_abstract = { HABSTRACT, {USTR("<abstract>")} };
+#include "types.h"
 
 static const uchar *TSTR[] = {
 	USTR("void"), USTR("i8"), USTR("i16"), USTR("i32"), USTR("i64"), USTR("f32"), USTR("f64"),

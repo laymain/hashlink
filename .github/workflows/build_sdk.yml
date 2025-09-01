@@ -1,0 +1,76 @@
+name: Build HashLink SDK
+
+on:
+  push:
+    branch:
+      - '*-sdk'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Install deps (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build libpcre2-dev zlib1g-dev
+
+      - name: Configure
+        run: cmake -S . -B build -DWITH_VIDEO=OFF -DWITH_OPENAL=OFF -DWITH_SDL=OFF -DWITH_DIRECTX=OFF -DWITH_METAL=OFF -DWITH_OPENGL=OFF -DWITH_SQLITE=OFF -DWITH_SSL=OFF -DWITH_UI=OFF -DWITH_UV=OFF -DWITH_HEAPS=OFF -DWITH_VM=OFF -DWITH_FMT=OFF -DBUILD_TESTING=OFF
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Package SDK
+        run: |
+          set -euo pipefail
+          mkdir -p sdk/include/std
+          cp src/*.h src/*.h sdk/include/
+          cp src/*.h src/std/*.h sdk/include/std/
+          case "${{ runner.os }}" in
+            Linux)
+              cp build/bin/libhl.so sdk/
+              ;;
+            macOS)
+              cp build/bin/libhl.dylib sdk/
+              ;;
+            Windows)
+              cp build/bin/libhl.* sdk/
+              ;;
+          esac
+          cd sdk && tar -zcvf hashlink-${{ github.ref_name }}-${{ runner.os }}.tar.gz * && cd -
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hashlink-${{ github.ref_name }}-${{ runner.os }}
+          path: sdk/hashlink-${{ github.ref_name }}-${{ runner.os }}.tar.gz
+        continue-on-error: false
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: HashLink SDK ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: ./artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

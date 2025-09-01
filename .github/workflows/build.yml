@@ -2,8 +2,6 @@
 name: Build
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
     # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
 

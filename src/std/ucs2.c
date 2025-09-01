@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <hl.h>
+#include "ucs2.h"
 #include <stdarg.h>
 
 #ifndef HL_NATIVE_UCHAR_FUN

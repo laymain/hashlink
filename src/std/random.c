@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <hl.h>
+#include "random.h"
 #include <time.h>
 #include <string.h>
 #if defined(HL_WIN_DESKTOP)
@@ -33,15 +33,7 @@
 #	include <unistd.h>
 #endif
 
-#define NSEEDS	25
 #define MAX		7
-
-typedef struct _rnd rnd;
-
-struct _rnd {
-	unsigned long seeds[NSEEDS];
-	unsigned long cur;
-};
 
 static unsigned long mag01[2]={
 	0x0, 0x8ebfd028 // magic, don't change

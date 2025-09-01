@@ -834,6 +834,7 @@ typedef struct {
 
 #define DEFINE_PRIM(t,name,args)						DEFINE_PRIM_WITH_NAME(t,name,args,name)
 #define _DEFINE_PRIM_WITH_NAME(t,name,args,realName)	C_FUNCTION_BEGIN EXPORT void *hlp_##realName( const char **sign ) { *sign = _FUN(t,args); return (void*)(&HL_NAME(name)); } C_FUNCTION_END
+#define DECLARE_PRIM(realName)	C_FUNCTION_BEGIN EXPORT void *hlp_##realName( const char **sign ); C_FUNCTION_END
 
 #if !defined(HL_NAME)
 #	define HL_NAME(p)					p
@@ -845,6 +846,7 @@ typedef struct {
 #	else
 #		define HL_PRIM
 #		define DEFINE_PRIM_WITH_NAME(t,name,args,realName)
+#		define DECLARE_PRIM(realName)
 #	endif
 #elif defined(LIBHL_STATIC)
 #	ifdef __cplusplus
@@ -853,6 +855,7 @@ typedef struct {
 #		define	HL_PRIM
 #	endif
 #define DEFINE_PRIM_WITH_NAME(t,name,args,realName)
+#define DECLARE_PRIM(realName)
 #else
 #	ifdef __cplusplus
 #		define	HL_PRIM				extern "C" EXPORT

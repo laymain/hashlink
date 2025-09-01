@@ -140,12 +140,40 @@ endif()
 add_library(libhl SHARED
     ${pcre_srcs}
     src/gc.c
+    src/code.c
+    src/jit.c
+    src/module.c
+    src/debugger.c
+    src/profile.c
     ${std_srcs}
 )
 
 set(public_headers
     src/hl.h
     src/hlc.h
+    src/hlmodule.h
+    src/opcodes.h
+    src/std/array.h
+    src/std/buffer.h
+    src/std/bytes.h
+    src/std/cast.h
+    src/std/date.h
+    src/std/error.h
+    src/std/file.h
+    src/std/fun.h
+    src/std/maps.h
+    src/std/math.h
+    src/std/obj.h
+    src/std/process.h
+    src/std/random.h
+    src/std/regexp.h
+    src/std/sort.h
+    src/std/string.h
+    src/std/thread.h
+    src/std/track.h
+    src/std/types.h
+    src/std/ucs2.h
+    src/std/unicase.h
 )
 
 set_target_properties(libhl

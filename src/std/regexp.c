@@ -19,24 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <hl.h>
-
-#define PCRE2_STATIC
-#include <pcre2.h>
-
-typedef struct _ereg ereg;
-
-struct _ereg {
-	void (*finalize)( ereg * );
-	/* The compiled regex code */
-	pcre2_code *regex;
-	/* Pointer to the allocated memory for match data */
-	pcre2_match_data *match_data;
-	/* Number of capture groups */
-	int n_groups;
-	/* Whether the last string was matched successfully */
-	bool matched;
-};
+#include "regexp.h"
 
 static void regexp_finalize( ereg *e ) {
 	pcre2_code_free(e->regex);

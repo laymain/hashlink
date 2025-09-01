@@ -130,32 +130,36 @@ typedef struct {
 	hl_module_context ctx;
 } hl_module;
 
-hl_code *hl_code_read( const unsigned char *data, int size, char **error_msg );
+C_FUNCTION_BEGIN
 
-hl_code_hash *hl_code_hash_alloc( hl_code *c );
-void hl_code_hash_finalize( hl_code_hash *h );
-void hl_code_hash_free( hl_code_hash *h );
-void hl_code_free( hl_code *c );
-int hl_code_hash_type( hl_code_hash *h, hl_type *t );
-void hl_code_hash_remap_globals( hl_code_hash *hnew, hl_code_hash *hold );
+HL_API hl_code *hl_code_read( const unsigned char *data, int size, char **error_msg );
 
-const uchar *hl_get_ustring( hl_code *c, int index );
-const char* hl_op_name( int op );
+HL_API hl_code_hash *hl_code_hash_alloc( hl_code *c );
+HL_API void hl_code_hash_finalize( hl_code_hash *h );
+HL_API void hl_code_hash_free( hl_code_hash *h );
+HL_API void hl_code_free( hl_code *c );
+HL_API int hl_code_hash_type( hl_code_hash *h, hl_type *t );
+HL_API void hl_code_hash_remap_globals( hl_code_hash *hnew, hl_code_hash *hold );
+
+HL_API const uchar *hl_get_ustring( hl_code *c, int index );
+HL_API const char* hl_op_name( int op );
 
 typedef unsigned char h_bool;
-hl_module *hl_module_alloc( hl_code *code );
-int hl_module_init( hl_module *m, h_bool hot_reload, h_bool vtune_later );
-h_bool hl_module_patch( hl_module *m, hl_code *code );
-void hl_module_free( hl_module *m );
-h_bool hl_module_debug( hl_module *m, int port, h_bool wait );
+HL_API hl_module *hl_module_alloc( hl_code *code );
+HL_API int hl_module_init( hl_module *m, h_bool hot_reload, h_bool vtune_later );
+HL_API h_bool hl_module_patch( hl_module *m, hl_code *code );
+HL_API void hl_module_free( hl_module *m );
+HL_API h_bool hl_module_debug( hl_module *m, int port, h_bool wait );
 
-void hl_profile_setup( int sample_count );
-void hl_profile_end();
+HL_API void hl_profile_setup( int sample_count );
+HL_API void hl_profile_end();
 
-jit_ctx *hl_jit_alloc();
-void hl_jit_free( jit_ctx *ctx, h_bool can_reset );
-void hl_jit_reset( jit_ctx *ctx, hl_module *m );
-void hl_jit_init( jit_ctx *ctx, hl_module *m );
-int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f );
-void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **debug, hl_module *previous );
-void hl_jit_patch_method( void *old_fun, void **new_fun_table );
+HL_API jit_ctx *hl_jit_alloc();
+HL_API void hl_jit_free( jit_ctx *ctx, h_bool can_reset );
+HL_API void hl_jit_reset( jit_ctx *ctx, hl_module *m );
+HL_API void hl_jit_init( jit_ctx *ctx, hl_module *m );
+HL_API int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f );
+HL_API void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **debug, hl_module *previous );
+HL_API void hl_jit_patch_method( void *old_fun, void **new_fun_table );
+
+C_FUNCTION_END
