@@ -327,6 +327,10 @@ static void *resolve_library( const char *lib, bool is_opt ) {
 	char tmp[256];
 	void *h;
 
+	if ( !lib[0] ) {
+		return NULL;
+	}
+
 #	ifndef HL_CONSOLE
 	static char *DISABLED_LIBS = NULL;
 	if( !DISABLED_LIBS ) {
